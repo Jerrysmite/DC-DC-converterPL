@@ -9,7 +9,8 @@
             "*.ino": "cpp",
             "main.h": "c",
             "pwm.h": "c",
-            "stm32f4xx.h": "c"
+            "stm32f4xx.h": "c",
+            "usart.h": "c"
         }
     },
     "extensions": {}

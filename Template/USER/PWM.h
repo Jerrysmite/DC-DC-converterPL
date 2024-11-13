@@ -8,6 +8,7 @@
 
 
 void PWM_Init();
-void PWM2_Init();
+void TIM6_Init(u32 arr,u16 psc);
+
 
 #endif 

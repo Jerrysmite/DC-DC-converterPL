@@ -7,6 +7,11 @@
 volatile u32 ADC1_Val     = 0;
 volatile u32 ADC1_Val_AVG = 0;
 volatile double ADC1_Volt = 0;
+volatile float duty       = 0;
+
+PID_Structure PID;
+
+volatile float Uo = 6.0;
 
 int main(void)
 {
@@ -20,6 +25,9 @@ int main(void)
     delay_init(168);
 
     PWM_Init();
+    PID_Init(&PID, 0.1, 0.01, 0, 1.0, 0.0, 1.0, 0.0001);
+
+    TIM6_Init(100 - 1, 84 - 1);
 
     LCD_Init();
     LCD_ShowString(30, 80, 400, 16, 16, "STM32F407ZGT6 BUCK @NitrenePL");
@@ -54,3 +62,11 @@ void ADC_IRQHandler(void)
 #endif
     }
 }
+void TIM6_DAC_IRQHandler()
+{
+    if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET) {
+        TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
+        duty       = PID_Realize(&PID, Uo);
+        TIM1->CCR1 = duty * (8400 - 1);
+    }
+};

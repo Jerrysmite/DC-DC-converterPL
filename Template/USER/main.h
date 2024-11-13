@@ -8,4 +8,5 @@
 #include "lcd.h"
 #include "adc.h"
 #include "PWM.h"
+#include "pid.h"
 #endif // MAIN_H
