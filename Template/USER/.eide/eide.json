@@ -26,6 +26,9 @@
           },
           {
             "path": "pid.c"
+          },
+          {
+            "path": "PWM.c"
           }
         ],
         "folders": []
