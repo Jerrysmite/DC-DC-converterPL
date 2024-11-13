@@ -4,6 +4,13 @@
             "path": "."
         }
     ],
-    "settings": {},
+    "settings": {
+        "files.associations": {
+            "*.ino": "cpp",
+            "main.h": "c",
+            "pwm.h": "c",
+            "stm32f4xx.h": "c"
+        }
+    },
     "extensions": {}
 }

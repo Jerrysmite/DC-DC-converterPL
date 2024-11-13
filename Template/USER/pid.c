@@ -28,5 +28,13 @@ float PID_Realize(PID_Structure *PID, float fed)
     if (PID->iOut >= PID->MaxIn) {
         PID->iOut = PID->MaxIn;
     }
-    if(PID->iOut <= -PID->MaxIn);
+    if (PID->iOut <= -PID->MaxIn) {
+        PID->iOut = -PID->MaxIn;
+        PID->out  = PID->pOut + PID->iOut + PID->dOut;
+    }
+    if (PID->out >= PID->Maxout) {
+        PID->out      = PID->Maxout;
+        PID->Last_err = PID->err;
+    }
+    return PID->out;
 }

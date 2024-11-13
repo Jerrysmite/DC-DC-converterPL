@@ -39,7 +39,7 @@ void PWM_Init()
     TIM_OCInitStructure.TIM_OutputState  = TIM_OutputState_Enable;
     TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
     TIM_OCInitStructure.TIM_OCIdleState  = TIM_OCIdleState_Reset;
-    TIM_OCInitStructure.TIM_Pulse        = 1050 - 1;
+    TIM_OCInitStructure.TIM_Pulse        = 4200 - 1;
     TIM_OC1Init(TIM1, &TIM_OCInitStructure);
 
     TIM_OC1PreloadConfig(TIM1, TIM_OCPreload_Enable);
@@ -53,5 +53,5 @@ void PWM_Init()
     TIM_BDTRInitStructure.TIM_Break           = TIM_Break_Disable;
     TIM_BDTRConfig(TIM1, &TIM_BDTRInitStructure);
 
-    TIM_Cmd(TIM1,ENABLE);
+    TIM_Cmd(TIM1, ENABLE);
 }

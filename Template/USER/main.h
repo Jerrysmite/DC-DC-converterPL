@@ -7,5 +7,5 @@
 #include "usart.h"
 #include "lcd.h"
 #include "adc.h"
-
+#include "PWM.h"
 #endif // MAIN_H

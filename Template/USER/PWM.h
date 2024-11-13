@@ -8,6 +8,6 @@
 
 
 void PWM_Init();
-
+void PWM2_Init();
 
 #endif 

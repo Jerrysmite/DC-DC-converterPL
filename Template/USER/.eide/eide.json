@@ -327,7 +327,8 @@
           "../SYSTEM/usart",
           ".",
           "../FWLIB/inc",
-          "RTE/_Template"
+          "RTE/_Template",
+          "../HARDWARE/LCD"
         ],
         "libList": [],
         "defineList": [
