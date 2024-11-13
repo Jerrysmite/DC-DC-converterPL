@@ -29,6 +29,9 @@
           },
           {
             "path": "PWM.c"
+          },
+          {
+            "path": "adc.c"
           }
         ],
         "folders": []
