@@ -23,6 +23,9 @@
           },
           {
             "path": "adc.c"
+          },
+          {
+            "path": "pid.c"
           }
         ],
         "folders": []
