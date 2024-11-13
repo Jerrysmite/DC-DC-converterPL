@@ -6,5 +6,6 @@
 #include "delay.h"
 #include "usart.h"
 #include "lcd.h"
+#include "adc.h"
 
 #endif // MAIN_H
