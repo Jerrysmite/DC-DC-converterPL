@@ -25,7 +25,7 @@ int main(void)
     delay_init(168);
 
     PWM_Init();
-    PID_Init(&PID, 0.1, 0.01, 0, 1.0, 0.0, 1.0, 0.0001);
+    PID_Init(&PID, Uo, 0.1, 0.01, 0, 0.99, 0.1, 0.99, 0.0001);
 
     TIM6_Init(100 - 1, 84 - 1);
 
@@ -65,8 +65,8 @@ void ADC_IRQHandler(void)
 void TIM6_DAC_IRQHandler()
 {
     if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET) {
-        TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
-        duty       = PID_Realize(&PID, Uo);
+        TIM_ClearITPendingBit(TIM6, TIM_IT_Update);
+        duty       = PID_Realize(&PID, ADC1_Volt);
         TIM1->CCR1 = duty * (8400 - 1);
     }
 };

@@ -19,7 +19,7 @@ typedef struct {
     float Last_err;
 } PID_Structure;
 
-void PID_Init(PID_Structure *PID, float Kp, float Ki, float Kd, float Maxout, float Minout, float MaxIn, float Ts);
+void PID_Init(PID_Structure *PID, float ref, float Kp, float Ki, float Kd, float Maxout, float Minout, float MaxIn, float Ts);
 
 float PID_Realize(PID_Structure *PID, float fed);
 
