@@ -69,4 +69,5 @@ void TIM6_DAC_IRQHandler()
         duty       = PID_Realize(&PID, ADC1_Volt);
         TIM1->CCR1 = duty * (8400 - 1);
     }
+    TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
 };
