@@ -65,8 +65,8 @@ void ADC_IRQHandler(void)
 void TIM6_DAC_IRQHandler()
 {
     if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET) {
-        TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
         duty       = PID_Realize(&PID, Uo);
-        TIM1->CCR1 = duty * (8400 - 1);
+        TIM1->CCR1 =(int) (duty * (8400 - 1));
     }
+    TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
 };

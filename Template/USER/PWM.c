@@ -53,12 +53,13 @@ void PWM_Init()
     TIM_BDTRInitStructure.TIM_Break           = TIM_Break_Disable;
     TIM_BDTRConfig(TIM1, &TIM_BDTRInitStructure);
 
-    TIM_Cmd(TIM1,ENABLE);
+    TIM_Cmd(TIM1, ENABLE);
 }
 
-void TIM6_Init(u32 arr,u16 psc){
+void TIM6_Init(u32 arr, u16 psc)
+{
 
-        RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM6, ENABLE); // 对于F407, APB2 Timer 时钟频率为168MHz
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM6, ENABLE); // 对于F407, APB2 Timer 时钟频率为168MHz
 
     TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
     TIM_TimeBaseStructure.TIM_Period        = arr;
@@ -71,7 +72,6 @@ void TIM6_Init(u32 arr,u16 psc){
     TIM_ITConfig(TIM6, TIM_IT_Update, ENABLE);
     TIM_ClearITPendingBit(TIM6, TIM_IT_Update); // 清除中断标志位
 
-    
     NVIC_InitTypeDef NVIC_InitStructure;
     NVIC_InitStructure.NVIC_IRQChannel                   = TIM6_DAC_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;      // 抢占优先级0
