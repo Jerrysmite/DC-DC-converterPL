@@ -25,16 +25,16 @@ int main(void)
     delay_init(168);
 
     PWM_Init();
-    PID_Init(&PID, Uo, 0.1, 0.01, 0, 0.99, 0.1, 0.99, 0.0001);
-
-    TIM6_Init(100 - 1, 84 - 1);
+    PID_Init(&PID, Uo, 0.05, 1.1, 0, 0.99, 0.1, 0.99, 0.000075);
+    PID_ref(&PID, 8.0);
+    TIM6_Init(75 - 1, 84 - 1);
 
     LCD_Init();
-    LCD_ShowString(30, 80, 400, 16, 16, "STM32F407ZGT6 BUCK @NitrenePL");
+    LCD_ShowString(30, 80, 400, 16, 16, (u8 *)"STM32F407ZGT6 BUCK @NitrenePL");
+    LCD_ShowString(30, 130, 400, 16, 16, (u8 *)"Volt:");
 
     while (1) {
-        delay_ms(500);
-        LCD_ShowString(30, 130, 400, 16, 16, "Volt:");
+        delay_ms(100);
         LCD_ShowxNum(110, 210, (int)ADC1_Volt, 1, 16, 0);
         LCD_ShowxNum(126, 210, (int)((ADC1_Volt - (int)ADC1_Volt) * 1000), 3, 16, 0X80);
     }
@@ -56,8 +56,12 @@ void ADC_IRQHandler(void)
         if (ADC1_Times == SAMPLE_TIMES) {
             ADC1_Val_AVG = ADC1_Val / SAMPLE_TIMES;
             ADC1_Volt    = (double)ADC1_Val_AVG * 0.0036 + 0.001;
-            ADC1_Val     = 0;
-            ADC1_Times   = 0;
+            // 截断为一位小数,可选
+            // ADC1_Volt = (double)((int)(ADC1_Volt * 10)) / 10.0;
+            // 截断为两位小数,可选
+            // ADC1_Volt  = (double)((int)(ADC1_Volt * 100)) / 100.0;
+            ADC1_Val   = 0;
+            ADC1_Times = 0;
         }
 #endif
     }
@@ -70,4 +74,4 @@ void TIM6_DAC_IRQHandler()
         TIM1->CCR1 = duty * (8400 - 1);
     }
     TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
-};
+}

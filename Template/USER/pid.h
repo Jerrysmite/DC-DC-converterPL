@@ -23,4 +23,5 @@ void PID_Init(PID_Structure *PID, float ref, float Kp, float Ki, float Kd, float
 
 float PID_Realize(PID_Structure *PID, float fed);
 
+void PID_ref(PID_Structure *PID, float ref);
 #endif

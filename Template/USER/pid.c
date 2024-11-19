@@ -44,3 +44,8 @@ float PID_Realize(PID_Structure *PID, float fed)
     PID->Last_err = PID->err;
     return PID->out;
 }
+
+void PID_ref(PID_Structure *PID, float ref)
+{
+    PID->ref = ref;
+}
