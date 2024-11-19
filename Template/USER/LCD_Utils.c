@@ -8,8 +8,7 @@ void LCD_Display_Init(void)
     LCD_ShowString(30, 130, 200, 16, 16, (u8 *)"Measured Volt:");
     LCD_ShowString(30, 200, 400, 16, 16, (u8 *)"Please Change Volt or Current.");
     LCD_ShowString(30, 240, 40, 16, 16, (u8 *)"MODE:");
-    LCD_ShowString(30, 260, 200, 16, 16, (u8 *)"(K1 to Change MODE)");
-
+    LCD_ShowString(30, 270, 200, 16, 16, (u8 *)"(K1 to Change MODE)");
 
     POINT_COLOR = BLUE;
     LCD_ShowChar(80, 300, '-', 16, 0x80);
@@ -18,6 +17,8 @@ void LCD_Display_Init(void)
     POINT_COLOR = RED;
     LCD_ShowChar(200, 300, '+', 16, 0x80);
     LCD_ShowString(196, 320, 16, 16, 16, (u8 *)"K0");
+
+    LCD_Show_Mode(0);
 }
 
 //  显示不断更新的ADC1_Volt值
@@ -34,12 +35,12 @@ void LCD_Show_Measured_Volt(double ADC1_Volt)
 void LCD_Show_Mode(u8 Mode)
 {
     if (Mode == 0) {
-        POINT_COLOR = BROWN;
-        LCD_ShowString(80, 240, 200, 16, 16, (u8 *)"Voltage Closed Loop");
+        LCD_Fill(90, 230, 206, 264, YELLOW);
+        POINT_COLOR = RED;
+        LCD_ShowString(100, 240, 200, 16, 16, (u8 *)"Voltage Mode");
     }
     if (Mode == 1) {
-        POINT_COLOR = BRRED;
-        LCD_ShowString(80, 240, 200, 16, 16, (u8 *)"Current Closed Loop");
+        // LCD_Fill(290, 230, 190, 384, YELLOW);
     }
 }
 

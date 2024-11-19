@@ -127,6 +127,10 @@ void TIM6_DAC_IRQHandler(void)
             duty       = PID_Realize(&PID, ADC1_Volt);
             TIM1->CCR1 = duty * (8400 - 1);
         }
+        if (Output_State == 0) {
+            //  非输出模式
+            TIM1->CCR1 = 1 - 1;
+        }
     }
 }
 
