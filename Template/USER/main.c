@@ -4,14 +4,18 @@
 // #define SINGLE
 #define AVG
 
-volatile u32 ADC1_Val     = 0;
-volatile u32 ADC1_Val_AVG = 0;
-volatile double ADC1_Volt = 0;
-volatile float duty       = 0;
+volatile u32 ADC1_Val        = 0;
+volatile u32 ADC1_Val_AVG    = 0;
+volatile double ADC1_Volt    = 0;
+volatile u32 ADC2_Val        = 0;
+volatile u32 ADC2_Val_AVG    = 0;
+volatile double ADC2_Current = 0;
+volatile float duty          = 0;
 
 PID_Structure PID;
 
 volatile float Uo = 6.0;
+volatile float Io = 0.1;
 
 volatile u8 key_up = 0;
 volatile u8 key_0  = 0;
@@ -48,12 +52,13 @@ int main(void)
     LCD_Display_Init();
     LCD_Show_Mode(MODE);
     LCD_Show_Output_State(Output_State);
+    LCD_Show_Set_Current(Io);
+    LCD_Show_Set_Volt(Uo);
 
     while (1) {
         delay_ms(100);
         LCD_Show_Measured_Volt(ADC1_Volt);
-
-        LCD_Show_Set_Volt(Uo);
+        LCD_Show_Measured_Current(ADC2_Current);
 
         if (key_0) {
             key_0 = 0;
@@ -64,24 +69,46 @@ int main(void)
                 PID_ref(&PID, Uo);
             }
             if (MODE == 1) {
-                //  电流环模式, todo
+                //  电流环模式
+                Io += (double)0.1;
+                LCD_Show_Set_Current(Io);
+                // todo
             }
         }
         if (key_1) {
             key_1 = 0;
             MODE  = !MODE;
             LCD_Show_Mode(MODE);
+            // 切换模式时一定要先把输出关闭
+            Output_State = 0;
+            LCD_Show_Output_State(Output_State);
+            delay_ms(10);
+            if (MODE == 0) {
+                //  电压环模式
+                LCD_Show_Set_Volt(Uo);
+                PID_ref(&PID, Uo);
+            }
+            if (MODE == 1) {
+                //  电流环模式
+                LCD_Show_Set_Current(Io);
+                // todo
+            }
         }
         if (key_2) {
             key_2 = 0;
             if (MODE == 0) {
                 //  电压环模式
                 Uo -= (double)0.1;
+                if (Uo <= 0.0) Uo = 0.0;
                 LCD_Show_Set_Volt(Uo);
                 PID_ref(&PID, Uo);
             }
             if (MODE == 1) {
-                //  电流环模式, todo
+                //  电流环模式
+                Io -= (double)0.1;
+                if (Io <= 0.0) Io = 0.0;
+                LCD_Show_Set_Current(Io);
+                // todo
             }
         }
         if (key_up) {
