@@ -32,6 +32,12 @@
           },
           {
             "path": "adc.c"
+          },
+          {
+            "path": "key.c"
+          },
+          {
+            "path": "LCD_Utils.c"
           }
         ],
         "folders": []

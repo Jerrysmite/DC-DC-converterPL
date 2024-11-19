@@ -9,4 +9,7 @@
 #include "adc.h"
 #include "PWM.h"
 #include "pid.h"
+#include "key.h"
+#include "LCD_Utils.h"
+
 #endif // MAIN_H
