@@ -13,6 +13,7 @@ volatile double ADC2_Current = 0;
 volatile float duty          = 0;
 
 PID_Structure PID;
+PID_Structure PID_Current;
 
 volatile float Uo = 6.0;
 volatile float Io = 0.1;
@@ -37,13 +38,18 @@ int main(void)
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
     //  初始化ADC1 及 采样时钟
     ADC1_IN6_Init();
+    ADC2_IN7_Init();
+
     ADC1_TIM3_Init(10 - 1, 84 - 1);
+    ADC2_TIM2_Init(100 - 1, 84 - 1);
 
     uart_init(115200);
     delay_init(168);
 
     PWM_Init();
     PID_Init(&PID, Uo, 0.05, 1.1, 0, 0.99, 0.1, 0.99, 0.000075);
+    PID_Init(&PID_Current, Io, 0.3, 1.1, 0, 0.99, 0.1, 0.99, 0.000075);
+
     TIM6_Init(75 - 1, 84 - 1);
 
     KEY_Init();
@@ -59,6 +65,7 @@ int main(void)
         delay_ms(100);
         LCD_Show_Measured_Volt(ADC1_Volt);
         LCD_Show_Measured_Current(ADC2_Current);
+        LCD_Show_Duty(duty);
 
         if (key_0) {
             key_0 = 0;
@@ -72,7 +79,7 @@ int main(void)
                 //  电流环模式
                 Io += (double)0.1;
                 LCD_Show_Set_Current(Io);
-                // todo
+                PID_ref(&PID_Current, Io);
             }
         }
         if (key_1) {
@@ -91,7 +98,7 @@ int main(void)
             if (MODE == 1) {
                 //  电流环模式
                 LCD_Show_Set_Current(Io);
-                // todo
+                PID_ref(&PID_Current, Io);
             }
         }
         if (key_2) {
@@ -108,7 +115,7 @@ int main(void)
                 Io -= (double)0.1;
                 if (Io <= 0.0) Io = 0.0;
                 LCD_Show_Set_Current(Io);
-                // todo
+                PID_ref(&PID_Current, Io);
             }
         }
         if (key_up) {
@@ -158,17 +165,18 @@ void ADC_IRQHandler(void)
             // ADC1_Volt = (double)((int)(ADC1_Volt * 10)) / 10.0;
             // 截断为两位小数,可选
             // ADC1_Volt  = (double)((int)(ADC1_Volt * 100)) / 100.0;
-            ADC2_Val   = 0;
-            ADC2_Times = 0;
+            ADC2_Current = (double)ADC2_Val_AVG * 0.002328 - 0.00124;
+            ADC2_Val     = 0;
+            ADC2_Times   = 0;
         }
     }
 }
 void TIM6_DAC_IRQHandler(void)
 {
-    if (MODE == 0) {
 
-        if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET) {
-            TIM_ClearITPendingBit(TIM6, TIM_IT_Update);
+    if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET) {
+        TIM_ClearITPendingBit(TIM6, TIM_IT_Update);
+        if (MODE == 0) {
             if (Output_State == 1) {
                 //  设定为输出模式时开始工作
                 duty       = PID_Realize(&PID, ADC1_Volt);
@@ -179,8 +187,17 @@ void TIM6_DAC_IRQHandler(void)
                 TIM1->CCR1 = 1 - 1;
             }
         }
-    }
-    if (MODE == 1) {
+        if (MODE == 1) {
+            if (Output_State == 1) {
+                //  设定为输出模式时开始工作
+                duty       = PID_Realize(&PID_Current, ADC2_Current);
+                TIM1->CCR1 = duty * (8400 - 1);
+            }
+            if (Output_State == 0) {
+                //  非输出模式
+                TIM1->CCR1 = 1 - 1;
+            }
+        }
     }
 }
 

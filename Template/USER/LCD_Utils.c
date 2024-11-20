@@ -10,6 +10,8 @@ void LCD_Display_Init(void)
     LCD_ShowString(30, 200, 400, 16, 16, (u8 *)"Please Change Volt or Current.");
     LCD_ShowString(30, 240, 40, 16, 16, (u8 *)"MODE:");
     LCD_ShowString(30, 270, 200, 16, 16, (u8 *)"(K1 to Change MODE)");
+    LCD_ShowString(30, 400, 50, 16, 16, (u8 *)"Duty:");
+    LCD_ShowChar(120, 400, '%', 16, 0x80);
 
     POINT_COLOR = BLUE;
     LCD_ShowChar(80, 300, '-', 16, 0x80);
@@ -113,4 +115,10 @@ void LCD_Show_Output_State(u8 State)
         POINT_COLOR = MAGENTA;
         LCD_ShowString(100, 360, 100, 16, 16, (u8 *)"OUTPUT KUP");
     }
+}
+
+void LCD_Show_Duty(double duty)
+{
+    POINT_COLOR = RED;
+    LCD_ShowxNum(100, 400, (int)(100.0 * duty), 2, 16, 0x80);
 }
