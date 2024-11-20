@@ -120,6 +120,7 @@ int main(void)
 }
 
 volatile u8 ADC1_Times = 0;
+volatile u8 ADC2_Times = 0;
 void ADC_IRQHandler(void)
 {
     if (ADC_GetITStatus(ADC1, ADC_IT_EOC) != RESET) {
@@ -144,20 +145,42 @@ void ADC_IRQHandler(void)
         }
 #endif
     }
+    if (ADC_GetITStatus(ADC2, ADC_IT_EOC) != RESET) {
+        ADC_ClearITPendingBit(ADC2, ADC_IT_EOC);
+        if (ADC2_Times < SAMPLE_TIMES) {
+            ADC2_Val += ADC_GetConversionValue(ADC2);
+            ADC2_Times++;
+        }
+        if (ADC2_Times == SAMPLE_TIMES) {
+            ADC2_Val_AVG = ADC2_Val / SAMPLE_TIMES;
+            // ADC2_Current    = (double)ADC1_Val_AVG * 0.0036457 - 0.005;
+            // 截断为一位小数,可选
+            // ADC1_Volt = (double)((int)(ADC1_Volt * 10)) / 10.0;
+            // 截断为两位小数,可选
+            // ADC1_Volt  = (double)((int)(ADC1_Volt * 100)) / 100.0;
+            ADC2_Val   = 0;
+            ADC2_Times = 0;
+        }
+    }
 }
 void TIM6_DAC_IRQHandler(void)
 {
-    if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET) {
-        TIM_ClearITPendingBit(TIM6, TIM_IT_Update);
-        if (Output_State == 1) {
-            //  设定为输出模式时开始工作
-            duty       = PID_Realize(&PID, ADC1_Volt);
-            TIM1->CCR1 = duty * (8400 - 1);
+    if (MODE == 0) {
+
+        if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET) {
+            TIM_ClearITPendingBit(TIM6, TIM_IT_Update);
+            if (Output_State == 1) {
+                //  设定为输出模式时开始工作
+                duty       = PID_Realize(&PID, ADC1_Volt);
+                TIM1->CCR1 = duty * (8400 - 1);
+            }
+            if (Output_State == 0) {
+                //  非输出模式
+                TIM1->CCR1 = 1 - 1;
+            }
         }
-        if (Output_State == 0) {
-            //  非输出模式
-            TIM1->CCR1 = 1 - 1;
-        }
+    }
+    if (MODE == 1) {
     }
 }
 
