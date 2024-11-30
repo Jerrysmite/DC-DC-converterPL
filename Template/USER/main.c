@@ -39,6 +39,7 @@ int main(void)
     //  初始化ADC1 及 采样时钟
     ADC1_IN6_Init();
     ADC2_IN7_Init();
+    //  注意这里一定要先初始化ADC再初始化定时器否则ADC会爆
 
     ADC1_TIM3_Init(10 - 1, 84 - 1);
     ADC2_TIM2_Init(100 - 1, 84 - 1);
